@@ -1,0 +1,69 @@
+const std = @import("std");
+
+pub fn GeneticAlgorithm(comptime T: type) type {
+    return struct {
+        const Self = @This();
+
+        pub const Individual = struct {
+            ind: T,
+            score: f32,
+        };
+
+        allocator: std.mem.Allocator,
+        population: []Individual,
+        keepFraction: f32,
+        mutateFraction: f32,
+
+        pub fn init(allocator: std.mem.Allocator, populationSize: usize, keepFraction: f32, mutateFraction: f32) !Self {
+            var pop: Self = undefined;
+            pop.allocator = allocator;
+            pop.population = try pop.allocator.alloc(Individual, populationSize);
+            pop.keepFraction = keepFraction;
+            pop.mutateFraction = mutateFraction;
+            for (pop.population) |*ind| {
+                ind.score = 0.0;
+            }
+            return pop;
+        }
+
+        pub fn deinit(pop: *Self) void {
+            pop.allocator.free(pop.population);
+        }
+
+        fn compare(context: Self, l: Individual, r: Individual) bool {
+            _ = context;
+            //if (less) {
+            //return l.score < r.score;
+            //} else {
+            return l.score > r.score;
+            //}
+        }
+
+        pub fn evaluate(pop: Self, context: anytype, comptime scoreFun: fn (context: anytype, individual: T) f32) void {
+            for (pop.population) |*ind| {
+                ind.score = scoreFun(context, ind.ind);
+            }
+            //std.sort.sort(Individual, pop.population, true, compare);
+            std.sort.heap(Individual, pop.population, pop, compare);
+        }
+
+        pub fn update(pop: *Self, context: anytype, comptime mutateFun: fn (context: anytype, individual: T) T, comptime regenFun: fn (context: anytype) T) void {
+            const keepNum: usize = @intFromFloat(pop.keepFraction * @as(f32, @floatFromInt(pop.population.len)));
+            const mutateNum: usize = @intFromFloat(pop.mutateFraction * @as(f32, @floatFromInt(pop.population.len)));
+            const regenNum: usize = (pop.population.len - keepNum) - mutateNum;
+            for (keepNum..mutateNum) |i| {
+                pop.population[i].ind = mutateFun(context, pop.population[i].ind);
+            }
+            for (mutateNum..regenNum) |i| {
+                pop.population[i].ind = regenFun(context);
+            }
+        }
+    };
+}
+
+test "simple test" {
+    var list = std.ArrayList(i32).init(std.testing.allocator);
+    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
+    try list.append(42);
+    try std.testing.expectEqual(@as(i32, 42), list.pop());
+}
