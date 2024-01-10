@@ -24,10 +24,10 @@ pub fn main() !void {
 
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     defer _ = gpa.deinit();
-    var alloc = gpa.allocator();
+    const alloc = gpa.allocator();
 
     var pcg = std.rand.Pcg.init(0);
-    var rng = pcg.random();
+    const rng = pcg.random();
 
     var pop: genAlg.GeneticAlgorithm(i32) = try genAlg.GeneticAlgorithm(i32).init(alloc, 100, 0.05, 0.2);
     for (pop.population) |*ind| {
