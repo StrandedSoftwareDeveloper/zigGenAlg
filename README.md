@@ -18,7 +18,7 @@ zig fetch --save https://github.com/StrandedSoftwareDeveloper/zigGenAlg/archive/
 - Add this to your build.zig:
 ```
 const gen_alg_mod = b.dependency("genAlg", .{ .target = target, .optimize = optimize }).module("genAlg");
-exe.addModule("genAlg", gen_alg_mod);
+exe.root_module.addImport("genAlg", gen_alg_mod);
 ```
 - And import it with this:
 ```
