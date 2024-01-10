@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     // Make module available as dependency. (borrowed/adapted from https://github.com/veloscillator/zig-wav/blob/69ef67061fc9ecb87d0b3d21287701aefae2ec09/build.zig#L9C1-L9C1)
-    //_ = b.addModule("genAlg", .{ .source_file = .{ .path = "src/zigGenAlg.zig" } });
+    _ = b.addModule("genAlg", .{ .root_source_file = .{ .path = "src/zigGenAlg.zig" } });
 
     const lib = b.addStaticLibrary(.{
         .name = "genAlg",
