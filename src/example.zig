@@ -37,7 +37,7 @@ pub fn main() !void {
 
     for (0..100) |i| {
         _ = i;
-        pop.evaluate(rng, calcScore);
+        pop.evaluate(rng, calcScore, genAlg.ScoreOrder.HighestIsBest);
         pop.update(rng, mutate, regen);
         try stdout.print("Best score: {d:.2}\n", .{pop.population[0].score});
     }

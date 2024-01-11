@@ -1,5 +1,10 @@
 const std = @import("std");
 
+pub const ScoreOrder = enum {
+    HighestIsBest,
+    LowestIsBest,
+};
+
 pub fn GeneticAlgorithm(comptime T: type) type {
     return struct {
         const Self = @This();
@@ -30,21 +35,19 @@ pub fn GeneticAlgorithm(comptime T: type) type {
             pop.allocator.free(pop.population);
         }
 
-        fn compare(context: Self, l: Individual, r: Individual) bool {
-            _ = context;
-            //if (less) {
-            //return l.score < r.score;
-            //} else {
-            return l.score > r.score;
-            //}
+        fn compare(context: ScoreOrder, l: Individual, r: Individual) bool {
+            switch (context) {
+                ScoreOrder.HighestIsBest => return l.score > r.score,
+                ScoreOrder.LowestIsBest => return l.score < r.score,
+            }
         }
 
-        pub fn evaluate(pop: Self, context: anytype, comptime scoreFun: fn (context: anytype, individual: T) f32) void {
+        pub fn evaluate(pop: Self, context: anytype, comptime scoreFun: fn (context: anytype, individual: T) f32, scoreOrder: ScoreOrder) void {
             for (pop.population) |*ind| {
                 ind.score = scoreFun(context, ind.ind);
             }
             //std.sort.sort(Individual, pop.population, true, compare);
-            std.sort.heap(Individual, pop.population, pop, compare);
+            std.sort.heap(Individual, pop.population, scoreOrder, compare);
         }
 
         pub fn update(pop: *Self, context: anytype, comptime mutateFun: fn (context: anytype, individual: T) T, comptime regenFun: fn (context: anytype) T) void {
