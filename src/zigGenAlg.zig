@@ -58,7 +58,7 @@ pub fn GeneticAlgorithm(comptime T: type) type {
                 pop.population[i].ind = mutateFun(context, pop.population[i].ind);
             }
             for (mutateNum..regenNum) |i| {
-                pop.population[i].ind = regenFun(context);
+                pop.population[i].ind = regenFun(context, pop.population[i].ind);
             }
         }
     };

@@ -10,7 +10,8 @@ pub fn mutate(rng: anytype, ind: i32) i32 {
     return ind + rng.intRangeAtMostBiased(i32, -10, 10);
 }
 
-pub fn regen(rng: anytype) i32 {
+pub fn regen(rng: anytype, ind: i32) i32 {
+    _ = ind;
     return rng.intRangeAtMostBiased(i32, -10, 10);
 }
 
