@@ -32,7 +32,7 @@ pub fn main() !void {
 
     var pop: genAlg.GeneticAlgorithm(i32) = try genAlg.GeneticAlgorithm(i32).init(alloc, 100, 0.05, 0.2);
     for (pop.population) |*ind| {
-        ind.ind = regen(rng);
+        ind.ind = regen(rng, 0);
     }
     defer pop.deinit();
 
