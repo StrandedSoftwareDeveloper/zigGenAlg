@@ -55,7 +55,7 @@ pub fn GeneticAlgorithm(comptime T: type) type {
             const mutateNum: usize = @intFromFloat(pop.mutateFraction * @as(f32, @floatFromInt(pop.population.len)));
             const regenNum: usize = (pop.population.len - keepNum) - mutateNum;
             for (keepNum..mutateNum) |i| {
-                pop.population[i].ind = mutateFun(context, pop.population[i].ind);
+                pop.population[i].ind = mutateFun(context, pop.population[i % keepNum].ind);
             }
             for (mutateNum..regenNum) |i| {
                 pop.population[i].ind = regenFun(context, pop.population[i].ind);
