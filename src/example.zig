@@ -10,9 +10,8 @@ pub fn mutate(rng: anytype, ind: i32) i32 {
     return ind + rng.intRangeAtMostBiased(i32, -10, 10);
 }
 
-pub fn regen(rng: anytype, ind: i32) i32 {
-    _ = ind;
-    return rng.intRangeAtMostBiased(i32, -10, 10);
+pub fn regen(rng: anytype, ind: *i32) void {
+    ind.* = rng.intRangeAtMostBiased(i32, -10, 10);
 }
 
 pub fn main() !void {
@@ -32,7 +31,7 @@ pub fn main() !void {
 
     var pop: genAlg.GeneticAlgorithm(i32) = try genAlg.GeneticAlgorithm(i32).init(alloc, 100, 0.05, 0.2);
     for (pop.population) |*ind| {
-        ind.ind = regen(rng, 0);
+        regen(rng, &ind.ind);
     }
     defer pop.deinit();
 

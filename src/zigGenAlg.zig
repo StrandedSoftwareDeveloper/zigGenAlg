@@ -50,7 +50,7 @@ pub fn GeneticAlgorithm(comptime T: type) type {
             std.sort.heap(Individual, pop.population, scoreOrder, compare);
         }
 
-        pub fn update(pop: *Self, context: anytype, comptime mutateFun: fn (context: anytype, individual: T) T, comptime regenFun: fn (context: anytype, individual: T) T) void {
+        pub fn update(pop: *Self, context: anytype, comptime mutateFun: fn (context: anytype, individual: T) T, comptime regenFun: fn (context: anytype, individual: *T) void) void {
             const keepNum: usize = @intFromFloat(pop.keepFraction * @as(f32, @floatFromInt(pop.population.len)));
             const mutateNum: usize = @intFromFloat(pop.mutateFraction * @as(f32, @floatFromInt(pop.population.len)));
             const regenNum: usize = (pop.population.len - keepNum) - mutateNum;
@@ -58,7 +58,7 @@ pub fn GeneticAlgorithm(comptime T: type) type {
                 pop.population[i].ind = mutateFun(context, pop.population[i % keepNum].ind);
             }
             for (mutateNum..regenNum) |i| {
-                pop.population[i].ind = regenFun(context, pop.population[i].ind);
+                regenFun(context, &pop.population[i].ind);
             }
         }
     };
