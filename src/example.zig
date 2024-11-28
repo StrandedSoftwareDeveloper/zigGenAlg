@@ -1,13 +1,13 @@
 const std = @import("std");
 const genAlg = @import("zigGenAlg.zig");
 
-pub fn calcScore(context: anytype, ind: i32) f32 {
+pub fn calcScore(context: anytype, ind: *i32) f32 {
     _ = context;
-    return @floatFromInt(ind);
+    return @floatFromInt(ind.*);
 }
 
-pub fn mutate(rng: anytype, ind: i32) i32 {
-    return ind + rng.intRangeAtMostBiased(i32, -10, 10);
+pub fn mutate(rng: anytype, ind: i32, out: *i32) void {
+    out.* = ind + rng.intRangeAtMostBiased(i32, -10, 10);
 }
 
 pub fn regen(rng: anytype, ind: *i32) void {

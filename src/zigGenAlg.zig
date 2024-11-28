@@ -42,20 +42,20 @@ pub fn GeneticAlgorithm(comptime T: type) type {
             }
         }
 
-        pub fn evaluate(pop: Self, context: anytype, comptime scoreFun: fn (context: anytype, individual: T) f32, scoreOrder: ScoreOrder) void {
+        pub fn evaluate(pop: Self, context: anytype, comptime scoreFun: fn (context: anytype, individual: *T) f32, scoreOrder: ScoreOrder) void {
             for (pop.population) |*ind| {
-                ind.score = scoreFun(context, ind.ind);
+                ind.score = scoreFun(context, &ind.ind);
             }
             //std.sort.sort(Individual, pop.population, true, compare);
             std.sort.heap(Individual, pop.population, scoreOrder, compare);
         }
 
-        pub fn update(pop: *Self, context: anytype, comptime mutateFun: fn (context: anytype, individual: T) T, comptime regenFun: fn (context: anytype, individual: *T) void) void {
+        pub fn update(pop: *Self, context: anytype, comptime mutateFun: fn (context: anytype, individual: T, out: *T) void, comptime regenFun: fn (context: anytype, individual: *T) void) void {
             const keepNum: usize = @intFromFloat(pop.keepFraction * @as(f32, @floatFromInt(pop.population.len)));
             const mutateNum: usize = @intFromFloat(pop.mutateFraction * @as(f32, @floatFromInt(pop.population.len)));
             const regenNum: usize = (pop.population.len - keepNum) - mutateNum;
             for (keepNum..mutateNum) |i| {
-                pop.population[i].ind = mutateFun(context, pop.population[i % keepNum].ind);
+                mutateFun(context, pop.population[i % keepNum].ind, &pop.population[i].ind);
             }
             for (mutateNum..regenNum) |i| {
                 regenFun(context, &pop.population[i].ind);
