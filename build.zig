@@ -16,13 +16,13 @@ pub fn build(b: *std.Build) void {
     const optimize = b.standardOptimizeOption(.{});
 
     // Make module available as dependency. (borrowed/adapted from https://github.com/veloscillator/zig-wav/blob/69ef67061fc9ecb87d0b3d21287701aefae2ec09/build.zig#L9C1-L9C1)
-    _ = b.addModule("genAlg", .{ .root_source_file = .{ .path = "src/zigGenAlg.zig" } });
+    _ = b.addModule("genAlg", .{ .root_source_file = .{ .cwd_relative = "src/zigGenAlg.zig" } });
 
     const lib = b.addStaticLibrary(.{
         .name = "genAlg",
         // In this case the main source file is merely a path, however, in more
         // complicated build scripts, this could be a generated file.
-        .root_source_file = .{ .path = "src/zigGenAlg.zig" },
+        .root_source_file = .{ .cwd_relative = "src/zigGenAlg.zig" },
         .target = target,
         .optimize = optimize,
     });
@@ -31,7 +31,7 @@ pub fn build(b: *std.Build) void {
         .name = "zigGenAlgExample",
         // In this case the main source file is merely a path, however, in more
         // complicated build scripts, this could be a generated file.
-        .root_source_file = .{ .path = "src/example.zig" },
+        .root_source_file = .{ .cwd_relative = "src/example.zig" },
         .target = target,
         .optimize = optimize,
     });
@@ -53,7 +53,7 @@ pub fn build(b: *std.Build) void {
     // Creates a step for unit testing. This only builds the test executable
     // but does not run it.
     const main_tests = b.addTest(.{
-        .root_source_file = .{ .path = "src/zigGenAlg.zig" },
+        .root_source_file = .{ .cwd_relative = "src/zigGenAlg.zig" },
         .target = target,
         .optimize = optimize,
     });
