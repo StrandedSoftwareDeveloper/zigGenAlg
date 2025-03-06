@@ -1,6 +1,7 @@
 .{
-    .name = "zigGenAlg",
+    .name = .zigGenAlg,
     .version = "0.1.0",
+    .fingerprint = 0xf181e1609dad0cce,
     .paths = .{
         "src/",
         "build.zig",

@@ -26,7 +26,7 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const alloc = gpa.allocator();
 
-    var pcg = std.rand.Pcg.init(0);
+    var pcg = std.Random.Pcg.init(0);
     const rng = pcg.random();
 
     var pop: genAlg.GeneticAlgorithm(i32) = try genAlg.GeneticAlgorithm(i32).init(alloc, 100, 0.05, 0.2);
